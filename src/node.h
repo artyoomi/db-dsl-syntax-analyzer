@@ -1,16 +1,15 @@
 #pragma once
 
-#include <iostream>
+#include <format>
 #include <fstream>
-#include <stdexcept>
-#include <string>
+#include <iostream>
+#include <magic_enum/magic_enum.hpp>
 #include <memory>
-#include <vector>
 #include <optional>
 #include <queue>
-#include <format>
-
-#include <magic_enum/magic_enum.hpp>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 namespace ast {
 
@@ -18,7 +17,7 @@ struct Node;
 
 using NodePtr = std::shared_ptr<Node>;
 
-enum class NodeType {
+enum class NodeType : uint8_t {
     // Request types
     GET_REQUEST,
     ADD_REQUEST,
@@ -41,8 +40,8 @@ enum class NodeType {
 };
 
 // Factory function that forwards arguments to the appropriate constructor
-template<typename... Args>
-NodePtr makeNodePtr(Args&&... args)
+template <typename... Args>
+auto makeNodePtr(Args&&... args) -> NodePtr
 {
     return std::make_shared<Node>(std::forward<Args>(args)...);
 }
@@ -53,22 +52,19 @@ struct Node {
     std::optional<std::string> token;
     std::vector<NodePtr>       children;
 
-    Node()                  = delete;
+    Node() = delete;
     Node(const Node& other) = delete;
-    Node(Node&& other)      = delete;
+    Node(Node&& other) = delete;
 
-    explicit Node(NodeType type)
-    : id{Node::generateId()}, type{type}, token{std::nullopt}
-    {
-    }
+    explicit Node(NodeType type) : id{Node::generateId()}, type{type}, token{std::nullopt} {}
 
-    explicit Node(NodeType type, const std::string & token)
-    : id{Node::generateId()}, type{type}, token{token}
+    explicit Node(NodeType type, const std::string& token)
+        : id{Node::generateId()}, type{type}, token{token}
     {
     }
 
     // Generates and assigns unique id for each new node
-    static unsigned generateId()
+    static auto generateId() -> unsigned
     {
         static unsigned id = 0;
         return ++id;
@@ -78,7 +74,8 @@ struct Node {
 };
 
 // <TODO>: need to be rewritten with nodeTraverse function
-// static void nodeToString(const NodePtr& root, std::ostream& out, int indentLevel = 0) {
+// static void nodeToString(const NodePtr& root, std::ostream& out, int
+// indentLevel = 0) {
 //     static std::string indentSymbol = "  ";
 
 //     for (int i = 0; i < indentLevel; ++i) {
@@ -91,7 +88,8 @@ struct Node {
 //     }
 //     out << '\n';
 
-//     for (auto & child : root->children) {nodeToString(child, out, indentLevel + 1); }
+//     for (auto & child : root->children) {nodeToString(child, out, indentLevel
+//     + 1); }
 // }
 
 // std::ostream& operator<<(std::ostream& os, const NodePtr& obj) {

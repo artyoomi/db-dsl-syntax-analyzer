@@ -9,7 +9,8 @@ unexisting DSL to make requests to database.
 - C++20-compatible compiler
 - Boost.Parser `==1.90.0`
 - Magic Enum `==0.9.7-1`
-- Graphviz `==14.1.4`
+- Graphviz `==14.1.4` (to plot AST visualization)
+- bear `==4.1.3` (for compilation DB)
 
 ### Usage
 To build you must have C++20 compatible compiler. To build write:

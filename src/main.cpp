@@ -17,19 +17,19 @@ public:
 
             try {
                 ast::NodePtr ast = ast::parser::parse(input);
-                std::string outputFile;
+                std::string  outputFile;
 
                 std::cout << "Filename of .dot: ";
                 std::getline(std::cin, outputFile);
                 dumpToGraphviz(outputFile, ast);
-            } catch (const std::exception & e) {
+            } catch (const std::exception& e) {
                 std::cerr << e.what();
             }
         }
     }
 };
 
-int main(int argc, char const * argv[])
+auto main(int argc, char const* argv[]) -> int
 {
     TUI tui;
     tui.run();

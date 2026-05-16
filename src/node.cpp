@@ -1,22 +1,13 @@
 #include "node.h"
 
-namespace ast
-{
+namespace ast {
 
 /**
-* Generic function to make operations with graph in BFS manner
-*/
-template<
-    typename Preprocess,
-    typename ProcessNode,
-    typename OnChildEnqueue,
-    typename Postprocess>
-static void bfsTraverse(
-    const NodePtr& root,
-    Preprocess preprocess,
-    ProcessNode processNode,
-    OnChildEnqueue onChildEnqueue,
-    Postprocess postprocess)
+ * Generic function to make operations with graph in BFS manner
+ */
+template <typename Preprocess, typename ProcessNode, typename OnChildEnqueue, typename Postprocess>
+static void bfsTraverse(const NodePtr& root, Preprocess preprocess, ProcessNode processNode,
+                        OnChildEnqueue onChildEnqueue, Postprocess postprocess)
 {
     std::queue<NodePtr> q;
     q.push(root);
@@ -38,7 +29,6 @@ static void bfsTraverse(
     postprocess(root);
 }
 
-
 static void toGraphviz(std::ostream& out, const NodePtr& root)
 {
     const std::string graphName = "AST";
@@ -46,9 +36,7 @@ static void toGraphviz(std::ostream& out, const NodePtr& root)
     bfsTraverse(
         root,
 
-        [&](auto) {
-            out << std::format("digraph {} {{\n", graphName);
-        },
+        [&](const auto&) { out << std::format("digraph {} {{\n", graphName); },
 
         [&](const NodePtr& node) {
             // Create graph node
@@ -63,10 +51,7 @@ static void toGraphviz(std::ostream& out, const NodePtr& root)
             out << std::format("\tnode{} -> node{};\n", parent->id, child->id);
         },
 
-        [&](auto) {
-            out << "}\n";
-        }
-    );
+        [&](const auto&) { out << "}\n"; });
 }
 
 void dumpToGraphviz(const std::string& filename, const NodePtr& node)
@@ -78,7 +63,7 @@ void dumpToGraphviz(const std::string& filename, const NodePtr& node)
         toGraphviz(file, node);
     } catch (const std::ifstream::failure& e) {
         throw std::runtime_error("Failed to open file " + filename + ": " + e.what());
-    } catch (const std::exception /* ex */) {
+    } catch (const std::exception& /* ex */) {
         throw std::runtime_error("Unhandled exception");
     }
 
