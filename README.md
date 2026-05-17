@@ -16,7 +16,13 @@ unexisting DSL to make requests to database.
 To build you must have C++20 compatible compiler. To build write:
 ```sh
 make
-./parser
+./build/parser
+
+# to gen compilation database
+make compdb
+
+# to clean
+make clean
 ```
 
 ### Get AST image
