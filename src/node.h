@@ -69,33 +69,7 @@ struct Node {
         static unsigned id = 0;
         return ++id;
     }
-
-    // friend std::ostream& operator<<(std::ostream& os, const NodePtr& obj);
 };
-
-// <TODO>: need to be rewritten with nodeTraverse function
-// static void nodeToString(const NodePtr& root, std::ostream& out, int
-// indentLevel = 0) {
-//     static std::string indentSymbol = "  ";
-
-//     for (int i = 0; i < indentLevel; ++i) {
-//         out << indentSymbol;
-//     }
-//     out << magic_enum::enum_name(root->type);
-
-//     if (root->token) {
-//         out << std::format(": {}", *root->token);
-//     }
-//     out << '\n';
-
-//     for (auto & child : root->children) {nodeToString(child, out, indentLevel
-//     + 1); }
-// }
-
-// std::ostream& operator<<(std::ostream& os, const NodePtr& obj) {
-//     nodeToString(obj, os, 0);
-//     return os;
-// }
 
 /** Format of resulting .dot file is as follows
     ```

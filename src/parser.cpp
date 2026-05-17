@@ -47,11 +47,39 @@ auto const base_condition_def =
 
 auto const condition_def =
     // clang-format off
-    (base_condition)
+    (base_condition > *(logical_op > base_condition))
     [([](auto& ctx) {  // clang-format on
-        NodePtr conditionNode = makeNodePtr(NodeType::CONDITION);
-        conditionNode->children.emplace_back(_attr(ctx));
-        _val(ctx) = conditionNode;
+        auto const& attr = _attr(ctx);
+
+        auto op_node_pairs = std::get<1>(attr);
+
+        NodePtr or_node = makeNodePtr(NodeType::OR);
+        std::vector<NodePtr>& or_nodes = or_node->children;
+
+        // Create first node with appropriate type if necessary
+        if (!op_node_pairs.empty() and std::get<0>(op_node_pairs[0]) == NodeType::AND) {
+            or_nodes.emplace_back(makeNodePtr(NodeType::AND));
+            or_nodes.back()->children.emplace_back(std::get<0>(attr));
+        } else {
+            or_nodes.emplace_back(std::get<0>(attr));
+        }
+
+        for (auto const &[logical_op_type, node] : op_node_pairs) {
+            if (logical_op_type == NodeType::AND) {
+                NodePtr last_node = or_nodes.back();
+                if (last_node->type != NodeType::AND) {
+                    or_nodes.emplace_back(makeNodePtr(NodeType::AND));
+                }
+                or_nodes.back()->children.emplace_back(node);
+            } else {
+                or_nodes.emplace_back(node);
+            }
+        }
+
+        NodePtr condition_node = makeNodePtr(NodeType::CONDITION);
+        condition_node->children.emplace_back(or_node);
+
+        _val(ctx) = condition_node;
     })];
 
 auto const base_assignment_def =
